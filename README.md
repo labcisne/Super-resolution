@@ -1,8 +1,9 @@
 # Super-resolution
 
-In this file we will walk you through the codes and the work flow used in the whole super-resoltion process.
+In this file we will walk you through the codes and the work flow used in the whole super-resolution process.
 
 GenerateLowResolution:
+
 This function will read images from the selected folder and the return low resolution images;
 The function will take the following parameters:
   - folder: Folder (folder's path) containing the high resolution images - string
