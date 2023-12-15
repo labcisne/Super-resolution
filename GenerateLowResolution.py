@@ -10,15 +10,14 @@ import secrets
 #Criação da função
 def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(0,1), tx=(-10,10), ty=(-10,10)):
     
-    image_list = []
     #Varredura das imagens na pasta
     for file in os.listdir(folder):
 
-        if os.path.isfile(os.path.join(folder,file)):
-            image_list.append(file)
-
+        #Leitura da imagem
+        img = cv.imread(os.path.join(folder,file))   
+        
         #Validação das imagens lidas
-        for img in image_list:
+        if img is not None:
 
             #Criação da pasta LR
             folder_name = f'LR - {file}'
