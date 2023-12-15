@@ -13,3 +13,10 @@ The function will take the following parameters:
   - theta: Angle's variation range - tuple -> (0,1)
   - tx: Range of translation on the horizontal axis - tuple -> (-10,10)
   - ty: Range of translation on vertical axis - tuple -> (-10,10)
+
+DemonsRegistration:
+
+this function will use the demons registration process from Simple ITK 
+, and right after that it will execute the alignment of the images and return the transform function.
+it will only take the folder (its path) containing the high resolution images as a parameter in code.
+- folder = 'images'
