@@ -14,6 +14,14 @@ The function will take the following parameters:
   - tx: Range of translation on the horizontal axis - tuple -> (-10,10)
   - ty: Range of translation on vertical axis - tuple -> (-10,10)
 
+in the beginning, the funtion will start list all the files contained inside the folder. Right after that, it will read all of them 
+returning an image or a "none" value. If the reading is an actual image, a new loop will begin creating the folder for the low resolution images generated
+and checking if this folder already exists. Then the read image will be shrinked, blurred, translated, and rotated. In the end, it will be saved with a hexadecimal 6 digits number as its name
+and the data and parameters used in the whole proces will be written in a csv file. In case it doesn't exist, it will be created.
+
+In the following steps the generated images will be used in the registration, alignment and transformation process, 
+these process make up the super resoltion process
+
 DemonsRegistration:
 
 this function will use the demons registration process from Simple ITK 
