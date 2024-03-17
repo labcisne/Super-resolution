@@ -86,4 +86,5 @@ def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(0,1), tx=(-10,1
                         writer.writerow(field)
                         writer.writerow([id, file, rf, k, ang, transx, transy])
 
-GenerateLowResolution("imagens")
+if __name__ == "__main__":
+    GenerateLowResolution("imagens")
