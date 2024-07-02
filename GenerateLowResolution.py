@@ -7,14 +7,16 @@ import os
 import csv
 import secrets
 
+import cv2
+
 #Criação da função
-def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(0,1), tx=(-10,10), ty=(-10,10)):
+def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(-1,1), tx=(-10,10), ty=(-10,10)):
     
     #Varredura das imagens na pasta
     for file in os.listdir(folder):
 
         #Leitura da imagem
-        img = cv.imread(os.path.join(folder,file))   
+        img = cv.imread(os.path.join(folder,file))  
         
         #Validação das imagens lidas
         if img is not None:
@@ -30,6 +32,24 @@ def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(0,1), tx=(-10,1
 
             for i in range(0,qty):
 
+                img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY) 
+
+                #Gerando aleatóriamente o ângulo (em graus)
+                ang = rd.uniform(theta[0],theta[1])
+
+                #Rotacionando as imagens e 
+                rotated = imutils.rotate(img_gray, angle=ang)
+
+                #Gerando aleatóriamente as componentes de tranlação em y e em x
+                transx = rd.randint(tx[0], ty[1])
+                transy = rd.randint(ty[0], ty[1])
+                
+                #Definindo a matriz de translação 
+                M = np.float32([[1, 0, transx], [0, 1, transy]])
+
+                #Transladando a imagem
+                shifted = cv.warpAffine(rotated, M, (rotated.shape[1], rotated.shape[0]))
+
                 #Leitura das dimensões da imagem
                 height = img.shape[0]
                 width = img.shape[1]
@@ -39,32 +59,21 @@ def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(0,1), tx=(-10,1
                 nwidth = width//rf
 
                 #Redimensionamento 1: Alterando as dimensões da imagem usando os novos tamanhos
-                nimg = cv.resize(img, (nwidth,nheight))
+                nimg = cv.resize(shifted, (nwidth,nheight))
 
                 #Aplicação de filtros de borramento
                 nimgG= cv.GaussianBlur(nimg, k, 0)
 
-                #Gerando aleatóriamente o ângulo (em graus)
-                ang = rd.uniform(theta[0],theta[1])
 
-                #Rotacionando as imagens e 
-                rotated = imutils.rotate(nimgG, angle=ang)
-                
-                #Gerando aleatóriamente as componentes de tranlação em y e em x
-                transx = rd.randint(tx[0], ty[1])
-                transy = rd.randint(ty[0], ty[1])
-
-                #Definindo a matriz de translação 
-                M = np.float32([[1, 0, transx], [0, 1, transy]])
-
-                #Transladando a imagem
-                shifted = cv.warpAffine(rotated, M, (rotated.shape[1], rotated.shape[0]))
-
+                mu, sigma = 0, 0.1 # mean and standard deviation
+                s = np.random.normal(mu, sigma, (nheight,nwidth))
+                imgF= nimg + s
+             
                 #Criação do id hexadecimal aleatório
                 id = secrets.token_hex(3)
             
                 #Salvando a imagem em uma pasta existente
-                cv.imwrite(f"{path}/{id}.png",shifted)
+                cv.imwrite(f"{path}/{id}.png",imgF)
                 
                 #Diretório do arquivo csv
                 arq_csv = 'LR.csv'
@@ -86,5 +95,4 @@ def GenerateLowResolution(folder, qty = 5, rf=2, k=(3,3), theta=(0,1), tx=(-10,1
                         writer.writerow(field)
                         writer.writerow([id, file, rf, k, ang, transx, transy])
 
-if __name__ == "__main__":
-    GenerateLowResolution("imagens")
+GenerateLowResolution("imagens")
